@@ -1,3 +1,4 @@
+
 class Knight
 attr_reader :confirmed
     def initialize
@@ -20,7 +21,7 @@ attr_reader :confirmed
 
     def validate_moves(array)
         array.each_with_index do |sub_array, index|
-          @confirmed.push(sub_array) if sub_array.all? {|num| num >= 0 && num < 7}
+          @confirmed.push(sub_array) if sub_array.all? {|num| num >= 0 && num <= 7}
         end
     end
       
