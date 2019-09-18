@@ -7,10 +7,18 @@ class GameBoard
     end
     
     def knight_moves(start, goal)
+      @start = start
       if valid_move?(start) && valid_move?(goal)
-        find_goal(start, goal)
+        first_node = @search_tree.append_tree(nil, start)
+        add_moves(first_node)
+        search = bfs(goal)
       else puts "one of your coordinates is not valid"
       end
+    end
+
+    def add_moves(root)
+      moves = @knight.available_moves(root.value) 
+      moves.each {|move| @search_tree.append_tree(root, move)}
     end
 
 
@@ -22,33 +30,30 @@ class GameBoard
       end
     end
 
-    def find_goal(node=start, goal)
-     moves = 1
-      if append_tree(@knight.available_moves(node)).include?(goal)
-       puts "success in #{moves} move"
-       true
-      else
-        append_tree(@knight.available_moves(node)).each do |array|
-          break if find_goal(array, goal)
-          moves += 1
-        end
-      end
+  def bfs(value)
+    return @search_tree.root if @search_tree.root.value == value
+    list = []
+    current = @search_tree.root
+    until current.value == value
+      current.children.each {|node| list << node}
+      current = list.shift
+      add_moves(current)
+      return nil if current.nil?
     end
-
-    def append_tree(array)
-      @search_tree.build_tree(array)
-    end
-
-    def dfs_rec(value, node=@search_tree.root)
-      current = node
-      if current.nil? || current.value.include?(value)
-        return nil if current.nil?
-        current.value
-      else dfs_rec(value, current.children)
-      end
-    end
-
-  
-      
-    
+    current
+    result(current)
   end
+
+  def result(goal)
+    moves = []
+    current = goal
+    until current.value == @start
+      moves << current.value
+      current = current.parent
+    end
+    current.value
+    moves << current.value
+    puts "You made it in #{moves.length} moves! Here's your path:"
+    moves.reverse.each {|move| puts "#{move}"}
+  end
+end
