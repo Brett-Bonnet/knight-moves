@@ -1,4 +1,6 @@
+  
 class SearchTree
+attr_accessor :root
   def initialize
     @root = nil
   end
@@ -12,9 +14,11 @@ class SearchTree
   def append_tree(root, value)
     node = Node.new
     node.value = value
-    if root.nil?
-      root = node
-    else 
+    if @root.nil?
+      @root = node
+    elsif root.nil?
+      return nil
+    else
       root.children << node
       node.parent = root
     end
